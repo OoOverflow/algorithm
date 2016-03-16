@@ -58,7 +58,7 @@ int stack_init(void)
         return index;
 }
 
-int push(int stack_index,int data)
+int push(const int stack_index,const int data)
 {
         struct stack_info *stack_info_temp;
         struct stack *new_stack_elem;
@@ -86,7 +86,7 @@ int push(int stack_index,int data)
         return 0;
 }
 
-int pop(int stack_index,int *data)
+int pop(const int stack_index,int *data)
 {
         struct stack_info *stack_info_temp;
         struct stack *top_stack_elem;
@@ -120,7 +120,7 @@ int pop(int stack_index,int *data)
         return 0;
 }
 
-int stack_destroy(int stack_index)
+int stack_destroy(const int stack_index)
 {
         struct stack_info *stack_info_temp;
         struct stack *top_stack_elem;
