@@ -181,7 +181,6 @@ int str2intarry(char *str,int argu_stack,int op_stack)
         }
 
         if (start_pos != NULL) {
-                printf("end\n");
                 push(argu_stack,char2int(start_pos,(str_len - changed_pos)));
                 while(previou_op){
                         ret = pop(op_stack,&previou_op);
