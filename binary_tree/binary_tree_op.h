@@ -12,6 +12,7 @@
 
 struct binary_tree_elem{
         int bt_data;
+        int bt_flag;
         struct binary_tree_elem *left;
         struct binary_tree_elem *right;
 };

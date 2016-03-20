@@ -54,36 +54,40 @@ int bt_create(int root_data)
         return index;
 }
 
-static struct binary_tree_elem *bt_deep_find(struct binary_tree_elem *root,const int f_data)
+static int bt_deep_find(struct binary_tree_elem *root,struct binary_tree_elem *used_leaves_pare)
 {
         struct binary_tree_elem *bt_parent;
         struct binary_tree_elem *bt_child;
-        struct binary_tree_elem *find_res;
+        int ret;
 
-        if (root == NULL) {
-                return NULL;
-        }
+        used_leaves_pare = NULL;
 
         bt_parent = root;
+        if (bt_parent->bt_flag == 0) {
+                return -1;
+        }
+        if (bt_parent->left == NULL) {
+                used_leaves_pare = bt_parent;
+                return 1;
+        }
+
+        if (bt_parent->right == NULL) {
+                used_leaves_pare = bt_parent;
+                return 2;
+        }
+
         bt_child = root->left;
-        if (bt_parent->bt_data == f_data) {
-                return bt_parent;
+        ret = bt_deep_find(bt_child,used_leaves_pare);
+        if (ret < 0) {
+                bt_child = root->right;
+                ret = bt_deep_find(bt_child,used_leaves_pare);
         }
 
-        while(1){
-                find_res = bt_deep_find(bt_child,f_data);
-                if (find_res != NULL) {
-                        return find_res;
-                }
+        return ret;
 
-                if (bt_child == bt_parent->right) {
-                        return NULL;
-                }else{
-                        bt_child = bt_parent->right;
-                }
-        }
 }
 
+#if 0
 int bt_find(const int bt_index,const int f_data)
 {
         struct binary_tree_elem *root;
@@ -101,24 +105,22 @@ int bt_find(const int bt_index,const int f_data)
 
         return 0;
 }
+#endif
 
-int bt_insert(const int bt_index,int parent_data,int ins_data)
+int bt_insert(const int bt_index,int ins_data,int ins_flag)
 {
         struct binary_tree_elem *root;
         struct binary_tree_elem *parent;
         struct binary_tree_elem *new_elem;
+        int ret;
 
         if (bt_array[bt_index] == NULL) {
                 return -EINVAL;
         }
 
         root = bt_array[bt_index];
-        parent = bt_deep_find(root,parent_data);
-        if (parent == NULL) {
-                return 0;
-        }
-
-        if (parent->left == NULL) {
+        ret = bt_deep_find(root,parent);
+        if (ret == 1) {
                 new_elem = malloc(sizeof(struct binary_tree_elem));
                 if (new_elem == NULL) {
                         return -ENOMEM;
@@ -126,10 +128,11 @@ int bt_insert(const int bt_index,int parent_data,int ins_data)
 
                 memset(new_elem,0,sizeof(struct binary_tree_elem));
                 new_elem->bt_data = ins_data;
+                new_elem->bt_flag = ins_flag;
                 parent->left = new_elem;
 
-                return 1;
-        }else if (parent->right == NULL) {
+                return 0;
+        }else if (ret == 2) {
                 new_elem = malloc(sizeof(struct binary_tree_elem));
                 if (new_elem == NULL) {
                         return -ENOMEM;
@@ -137,11 +140,12 @@ int bt_insert(const int bt_index,int parent_data,int ins_data)
 
                 memset(new_elem,0,sizeof(struct binary_tree_elem));
                 new_elem->bt_data = ins_data;
+                new_elem->bt_flag = ins_flag;
                 parent->right = new_elem;
 
-                return 1;
-        }else{
                 return 0;
+        }else{
+                return -1;
         }
 }
 
