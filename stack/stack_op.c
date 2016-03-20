@@ -83,6 +83,7 @@ int push(const int stack_index,const int data)
                 stack_info_temp->top = new_stack_elem;
         }
 
+        printf("-----------push %d to %d\n",data,stack_index);
         return 0;
 }
 
@@ -117,6 +118,7 @@ int pop(const int stack_index,int *data)
                 free(top_stack_elem);
         }
 
+        printf("-----------pop %d from %d\n",*data,stack_index);
         return 0;
 }
 
