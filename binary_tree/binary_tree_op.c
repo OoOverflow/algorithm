@@ -32,7 +32,7 @@ static int find_usable_position()
         return -ENOMEM;
 }
 
-int bt_create(int root_data)
+int bt_create(int root_bt_data,int root_bt_flag)
 {
         int index;
         struct binary_tree_elem *root;
@@ -48,31 +48,28 @@ int bt_create(int root_data)
         }
 
         memset(root,0,sizeof(struct binary_tree_elem));
-        root->bt_data = root_data;
+        root->bt_data = root_bt_data;
+        root->bt_flag = root_bt_flag;
         bt_array[index] = root;
 
         return index;
 }
 
-static int bt_deep_find(struct binary_tree_elem *root,struct binary_tree_elem *used_leaves_pare)
+static int bt_deep_find(struct binary_tree_elem *root,struct binary_tree_elem **used_leaves_pare)
 {
-        struct binary_tree_elem *bt_parent;
         struct binary_tree_elem *bt_child;
         int ret;
 
-        used_leaves_pare = NULL;
-
-        bt_parent = root;
-        if (bt_parent->bt_flag == 0) {
+        if (root->bt_flag == 0) {
                 return -1;
         }
-        if (bt_parent->left == NULL) {
-                used_leaves_pare = bt_parent;
+        if (root->left == NULL) {
+                *used_leaves_pare = root;
                 return 1;
         }
 
-        if (bt_parent->right == NULL) {
-                used_leaves_pare = bt_parent;
+        if (root->right == NULL) {
+                *used_leaves_pare = root;
                 return 2;
         }
 
@@ -119,7 +116,7 @@ int bt_insert(const int bt_index,int ins_data,int ins_flag)
         }
 
         root = bt_array[bt_index];
-        ret = bt_deep_find(root,parent);
+        ret = bt_deep_find(root,&parent);
         if (ret == 1) {
                 new_elem = malloc(sizeof(struct binary_tree_elem));
                 if (new_elem == NULL) {
