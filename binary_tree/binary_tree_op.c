@@ -66,22 +66,23 @@ static int bt_deep_find(struct binary_tree_elem *root,struct binary_tree_elem **
         if (root->left == NULL) {
                 *used_leaves_pare = root;
                 return 1;
+        }else{
+                bt_child = root->left;
+                ret = bt_deep_find(bt_child,used_leaves_pare);
+                if (ret > 0) {
+                        return ret;
+                }
         }
 
         if (root->right == NULL) {
                 *used_leaves_pare = root;
                 return 2;
-        }
-
-        bt_child = root->left;
-        ret = bt_deep_find(bt_child,used_leaves_pare);
-        if (ret < 0) {
+        }else{
                 bt_child = root->right;
                 ret = bt_deep_find(bt_child,used_leaves_pare);
         }
 
         return ret;
-
 }
 
 #if 0
@@ -146,4 +147,94 @@ int bt_insert(const int bt_index,int ins_data,int ins_flag)
         }
 }
 
+static int bt_calc_unit(struct binary_tree_elem *root)
+{
+        struct binary_tree_elem *bt_temp;
+        int left;
+        int right;
+
+        bt_temp = root->left;
+        if (bt_temp == NULL) {
+                return -EINVAL;
+        }
+
+        if (bt_temp->bt_flag == 0) {
+                left = bt_temp->bt_data;
+                printf("left:%d\n",left);
+        }else{
+                left = bt_calc_unit(bt_temp);
+                printf("left res:%d\n",left);
+        }
+
+        bt_temp = root->right;
+        if (bt_temp->bt_flag == 0) {
+                right = bt_temp->bt_data;
+                printf("right:%d\n",right);
+        }else{
+                right = bt_calc_unit(bt_temp);
+                printf("right res:%d\n",right);
+        }
+
+        switch(root->bt_data){
+                case '+':
+                return left + right;
+                case '*':
+                return left * right;
+                case '-':
+                return left - right;
+                case '/':
+                return left / right;
+        }
+}
+
+
+
+int bt_read_all(const int bt_index,int *result)
+{
+        struct binary_tree_elem *root;
+
+        if (bt_array[bt_index] == NULL) {
+                return -EINVAL;
+        }
+        root = bt_array[bt_index];
+
+        *result = bt_calc_unit(root);
+        
+        return 1;
+}
+
+int bt_read_unit(struct binary_tree_elem *root,int deep)
+{
+        int deep_tmp = 0;
+        int pos;
+
+        deep_tmp = deep;
+        for (pos = 0;pos < deep_tmp;pos++) {
+                printf("-");
+        }
+        printf("%d\n",root->bt_data);
+        deep_tmp++;
+
+        if (root->left != NULL) {
+                bt_read_unit(root->left,deep_tmp);
+        }
+
+        if (root->right != NULL) {
+                bt_read_unit(root->right,deep_tmp);
+        }
+
+
+}
+int bt_read_all_unit(const int bt_index)
+{
+        struct binary_tree_elem *root;
+
+        if (bt_array[bt_index] == NULL) {
+                return -EINVAL;
+        }
+        root = bt_array[bt_index];
+
+        bt_read_unit(root,0);
+        
+}
 
