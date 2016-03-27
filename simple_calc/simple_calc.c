@@ -52,7 +52,7 @@ int char2int(char *start,int length)
 
 int op_level_judge(char op)
 {
-        switch(op){
+        switch (op) {
                 case '+':
                 case '-':
                 return 0;
@@ -121,7 +121,7 @@ int str2intarry(char *str,int argu_stack,int op_stack)
 
                         if (str[pos] == 41) {
                                 printf("********cur pos:%c\n",str[pos]);
-                                while(previou_op != 40){
+                                while (previou_op != 40) {
                                         pop(op_stack,&previou_op);
                                         push(argu_stack,previou_op);
                                         ret = pop(op_stack,&previou_op);
@@ -137,10 +137,10 @@ int str2intarry(char *str,int argu_stack,int op_stack)
                         }
 
                         ret = 0;
-                        while(ret != 1){
+                        while (ret != 1) {
                                 ret = compare_op(str[pos],previou_op);
                                 printf("compare ret:%d\n",ret);
-                                switch(ret){
+                                switch (ret) {
                                         case 1:
                                         push(op_stack,str[pos]);
                                         previou_op = str[pos];
@@ -234,7 +234,7 @@ int main()
                 bt_index = bt_create(data,1);
         }
 
-        while(!(res < 0)){
+        while (!(res < 0)) {
                 res = pop(argu_stack,&data);
                 if (op_level_judge(data) < 0) {
                         ret = bt_insert(bt_index,data,0);
