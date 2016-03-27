@@ -33,6 +33,7 @@
 #include<string.h>
 
 #include"stack_op.h"
+#include"binary_tree_op.h"
 
 #define MAX_EXPR_LENGTH         512
 
@@ -156,7 +157,10 @@ int str2intarry(char *str,int argu_stack,int op_stack)
                                         pop(op_stack,&previou_op);
                                         push(argu_stack,previou_op);
                                         if (pop(op_stack,&previou_op) < 0) {
+                                                push(op_stack,str[pos]);
+                                                previou_op = str[pos];
                                                 ret = 1;
+                                                break;
                                         }
                                         if (previou_op == 40) {
                                                 push(op_stack,previou_op);
@@ -171,39 +175,40 @@ int str2intarry(char *str,int argu_stack,int op_stack)
                                         break;
                                 }
                         }
-                        continue;
+continue;
                 }else{
                         if (start_pos == NULL) {
                                 start_pos = &str[pos];
                                 changed_pos = pos;
                         }
                 }
-        }
+                }
 
         if (start_pos != NULL) {
                 push(argu_stack,char2int(start_pos,(str_len - changed_pos)));
-                while(previou_op){
-                        ret = pop(op_stack,&previou_op);
+        }
 
-                        if (ret < 0) {
-                                printf("empty stack\n");
-                                break;
-                        }
-                        if (previou_op == 40){
-                                continue;
-                        }
+        while (previou_op) {
+                ret = pop(op_stack,&previou_op);
 
-                        push(argu_stack,previou_op);
+                if (ret < 0) {
+                        printf("empty stack\n");
+                        break;
                 }
+                if (previou_op == 40){
+                        continue;
+                }
+
+                push(argu_stack,previou_op);
         }
 
 }
 
 int main()
 {
-        char expr[] = "1+2*3+(4*5+6)*7";
+        char expr[] = "2*3-3+(4*5+6)*7+8*9+(10+11)";
 
-        int pos;
+        int ret;
         int res = 0;
         int bt_index;
         int data;

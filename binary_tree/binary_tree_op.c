@@ -181,9 +181,9 @@ static int bt_calc_unit(struct binary_tree_elem *root)
                 case '*':
                 return left * right;
                 case '-':
-                return left - right;
+                return right - left;
                 case '/':
-                return left / right;
+                return right / left;
         }
 }
 
